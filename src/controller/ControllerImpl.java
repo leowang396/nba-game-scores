@@ -2,32 +2,39 @@ package controller;
 
 import dao.DBHelper;
 import java.sql.Connection;
+import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.Scanner;
 import view.Console;
 
 public class ControllerImpl implements Controller{
 
-  private final String url = "jdbc:mysql://localhost:3306/" + "";
-  private Connection conn;
+  private final String url = "jdbc:mysql://localhost:3306/" + "nba_game_scores";
+  private final DBHelper dbh = new DBHelper(url,"java","password");
 
   public ControllerImpl() {
-    Scanner sc = new Scanner(System.in);
-    Console.showText("Please input your username:");
-    String username = sc.next();
-    Console.showText("Please input your password:");
-    String password = sc.next();
-    try {
-      this.conn = DBHelper
-          .getConn(url, username, password);
-    } catch (IllegalStateException e) {
-      System.out.println(e);
-    }
-    sc.close();
   }
 
-  private void mainMenu(ControllerImpl controllerImpl) {
+  protected void mainMenu(ControllerImpl controllerImpl) throws ParseException, SQLException {
     Scanner sc = new Scanner(System.in);
-
+    Console.showText("Please select the function that you want to use:\n"
+        + "1.View data by Day\n"
+        + "2.View data by Team\n"
+        + "3.View data by Player\n"
+        + "9.User Administration\n"
+        + "0.Exit the program");
+    int choice = sc.nextInt();
+    switch (choice) {
+      case 1 -> new ViewByDay(this,dbh).showByDay();
+      case 2 -> new ViewByTeam().showByTeam();
+      case 3 -> new ViewByPlayer().showByPlayer();
+      case 9-> new UserAdmin(this,dbh).mainMenu();
+      case 0 -> exit();
+      default -> {
+        Console.showText("Invalid choice, please select again.");
+        mainMenu(this);
+      }
+    }
   }
 
   /**
@@ -52,9 +59,32 @@ public class ControllerImpl implements Controller{
   }
 
   @Override
-  public void go() {
-    Controller controllerImpl = new ControllerImpl();
-    controllerImpl.Main
+  public void go() throws SQLException, ParseException {
+    Scanner sc = new Scanner(System.in);
+    Console.showText("Please input your username:");
+    String username = sc.next();
+    Console.showText("Please input your password:");
+    String password = sc.next();
+    int retryTimes = 0;
+    while (dbh.login(username,password) == 0) {
+      if (retryTimes == 5) {
+        Console.showText("Retry failed too many times.");
+        this.exit();
+      }
+      Console.showText("Please input your username:");
+      username = sc.next();
+      Console.showText("Please input your password:");
+      password = sc.next();
+      retryTimes++;
+    }
+    Console.showText("Login success!");
+    mainMenu(this);
+    //controllerImpl.Main
+  }
+
+  public void exit() throws SQLException {
+    dbh.closeConn();
+    System.exit(0);
   }
 }
 
