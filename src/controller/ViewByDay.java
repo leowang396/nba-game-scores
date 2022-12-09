@@ -37,7 +37,7 @@ public class ViewByDay {
     ArrayList<Match> matchesByDateArrayList;
     matchesByDateArrayList = dbh.getMatchesByDay(date);
     matchesByDateArrayList.forEach((match) -> {
-      Console.showText(match.toString()+"\n");
+      Console.showText(match.toString());
       Console.showText("Do you want to check the Player Status for this Game?(Y/N)");
       String choice = sc.next();
       if ("Y".equals(choice)) {

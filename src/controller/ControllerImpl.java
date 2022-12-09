@@ -21,13 +21,15 @@ public class ControllerImpl implements Controller{
         + "1.View data by Day\n"
         + "2.View data by Team\n"
         + "3.View data by Player\n"
+        + "4.Contribute on data\n"
         + "9.User Administration\n"
         + "0.Exit the program");
     int choice = sc.nextInt();
     switch (choice) {
       case 1 -> new ViewByDay(this,dbh).showByDay();
-      case 2 -> new ViewByTeam().showByTeam();
-      case 3 -> new ViewByPlayer().showByPlayer();
+      case 2 -> new ViewByTeam(this,dbh).showByTeam();
+      case 3 -> new ViewByPlayer(this,dbh).showByPlayer();
+      case 4 -> new ContributeData(this,dbh).mainMenu();
       case 9-> new UserAdmin(this,dbh).mainMenu();
       case 0 -> exit();
       default -> {

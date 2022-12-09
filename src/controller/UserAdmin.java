@@ -11,12 +11,12 @@ public class UserAdmin {
   private final ControllerImpl controllerImpl;
   private final DBHelper dbh;
 
-  public UserAdmin(ControllerImpl controllerImpl, DBHelper dbh) {
+  protected UserAdmin(ControllerImpl controllerImpl, DBHelper dbh) {
     this.controllerImpl = controllerImpl;
     this.dbh = dbh;
   }
 
-  public void mainMenu() throws SQLException, ParseException {
+  protected void mainMenu() throws SQLException, ParseException {
     Scanner sc = new Scanner(System.in);
     Console.showText("Please select the function for user:\n"
         + "1.Create a new user\n"
